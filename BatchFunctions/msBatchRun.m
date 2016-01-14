@@ -74,11 +74,3 @@ msBatchExtractBehavior(pwd, trackLength);
 speedThresh = 5;%cm
 binSize = 5;%cm
 msBatchLinearSFR(pwd, speedThresh, binSize)
-%% Temp Stuff (Output Matched Numbers)
-dataFolders = msBatchFindDataFolders(pwd,[]);
-for folderNum = 1:length(dataFolders)
-    currentFolder = dataFolders{folderNum};
-    temp = load([currentFolder '\ms.mat']);
-    ms = temp.ms; 
-    output(:,folderNum) = sum(ms.matchedSegments(ms.segInField==1,:)>0);%/sum(ms.matchedSegments(ms.segInField==1,folderNum)>0);
-end
