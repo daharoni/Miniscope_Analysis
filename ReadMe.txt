@@ -1,3 +1,5 @@
+SOME FILES ARE CURRENTLY OUTDATED. THEY SHOULD BE UPDATED BY THE END OF JANUARY.
+
 This work is a result of a collaboration at UCLA between the Golshani Lab, Silva Lab, and Khakh Lab. Contact Daniel Aharoni, DBAharoni@gmail.com, with questions or comments.
 
 msBatchRun.m outlines the order one would generally run the processing and analysis functions.
