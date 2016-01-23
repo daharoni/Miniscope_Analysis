@@ -8,7 +8,7 @@ function ms = msSelectROIs(ms)
     refFrame = msReadFrame(ms,refFrameNumber,true,false,false);
          
     if (isfield(ms,'alignmentROI'))  %checks if alignmentROIs already exsist
-        imshow(uint8(refFrame))
+        imshow(uint8(refFrame), [min(ms.minFluorescence) max(ms.maxFluorescence)])
         hold on
         for ROINum = 1:size(ms.alignmentROI,2)
             rectangle('Position', ms.alignmentROI(:,ROINum),'LineWidth',2,'LineStyle','--');

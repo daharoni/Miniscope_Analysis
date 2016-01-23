@@ -1,4 +1,4 @@
-function vidObj = msFindBrightSpots(vidObj,stepSize, frameLimits,dFFTresh, backgroundTresh)
+function vidObj = msFindBrightSpots(vidObj,stepSize, frameLimits,dFFTresh, backgroundTresh,plotting)
 %MSFINDBRIGHTSPOTS Function will identify the frame and pixel location of
 %local maxima of dF/F across entire video. msFindBrightSpots will step
 %through the video detecting locations that exceed dFFThresh and
@@ -55,9 +55,6 @@ for startFrameNum=frameLimits(1):stepSize:min([frameLimits(2) vidObj.numFrames-s
     frameBase = filter2(hLarge,frameMax);
     %----------------------------------------------------------------------
     
-    f = figure(1);
-    clf
-    hold off
     %Applies dFFThreshold and backgroundThreshold to the max projection.
     %Erodes the resulting mask to remove noise
     bw = zeros(size(frameMax));
@@ -80,23 +77,28 @@ for startFrameNum=frameLimits(1):stepSize:min([frameLimits(2) vidObj.numFrames-s
     %----------------------------------------------------------------------
     
     %Plotting (Can be commented out)
-    subplot_tight(1,2,1,0.05*[1 1])
-    pcolor(frameMax)
-    caxis([-0.05 .3]) %sets visial dF/F range    
-    colormap gray
-    freezeColors
-    shading flat
-    hold on
-    %overlay outline of segmentations
-    h3 = imshow(green);
-    set(h3, 'AlphaData', bw);
-    title(['Frame: ' num2str(frameNum) '/' num2str(vidObj.numFrames)]);
-    subplot_tight(1,2,2,0.05*[1 1])
-    pcolor(vidObj.brightSpots)
-    daspect([1 1 1])
-    shading flat
-    colormap jet
-    freezeColors
+    if plotting == true
+        figure(1);
+        clf
+        hold off
+        subplot_tight(1,2,1,0.05*[1 1])
+        pcolor(frameMax)
+        caxis([-0.05 .3]) %sets visial dF/F range    
+        colormap gray
+        freezeColors
+        shading flat
+        hold on
+        %overlay outline of segmentations
+        h3 = imshow(green);
+        set(h3, 'AlphaData', bw);
+        title(['Frame: ' num2str(frameNum) '/' num2str(vidObj.numFrames)]);
+        subplot_tight(1,2,2,0.05*[1 1])
+        pcolor(vidObj.brightSpots)
+        daspect([1 1 1])
+        shading flat
+        colormap jet
+        freezeColors
+    end
     %----------------------------------------------------------------------
 
 end

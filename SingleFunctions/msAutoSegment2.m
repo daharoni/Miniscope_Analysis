@@ -1,4 +1,4 @@
-function vidObj = msAutoSegment2(vidObj, frameLimits, cellAreaLimits, downSamp,corrCoefThreshDefault)
+function vidObj = msAutoSegment2(vidObj, frameLimits, cellAreaLimits, downSamp,corrCoefThreshDefault,plotting)
 %MSAUTOSEGMENT2 An serial iterative algorithm for identifying the boundries
 %of active neurons.
 %   vidObj = The Miniscope data structure which contains location of video
@@ -23,9 +23,9 @@ hSmall = fspecial('average', 5);
 hLarge = fspecial('average', 60);
 
 %Used for plotting (Generally plotting should be commented out)
-green = cat(3, zeros(vidObj.alignedHeight,vidObj.alignedWidth), ...
-    ones(vidObj.alignedHeight,vidObj.alignedWidth), ...
-    zeros(vidObj.alignedHeight,vidObj.alignedWidth));
+green = cat(3, zeros(vidObj.alignedHeight(vidObj.selectedAlignment),vidObj.alignedWidth(vidObj.selectedAlignment)), ...
+    ones(vidObj.alignedHeight(vidObj.selectedAlignment),vidObj.alignedWidth(vidObj.selectedAlignment)), ...
+    zeros(vidObj.alignedHeight(vidObj.selectedAlignment),vidObj.alignedWidth(vidObj.selectedAlignment)));
 green(:,:,1) = 10*vidObj.brightSpots/max(vidObj.brightSpots(:));
 ttt = green(:,:,1)==0;
 green(:,:,2) = ttt;
@@ -47,13 +47,13 @@ se2 = strel('diamond',4);
 %location where segments are stored
 if ~isfield(vidObj,'segments')
     vidObj.segments = [];
-    vidObj.segMat = zeros(vidObj.alignedHeight,vidObj.alignedWidth);
-    vidObj.segementOutline = zeros(vidObj.alignedHeight,vidObj.alignedWidth);
+    vidObj.segMat = zeros(vidObj.alignedHeight(vidObj.selectedAlignment),vidObj.alignedWidth(vidObj.selectedAlignment));
+    vidObj.segementOutline = zeros(vidObj.alignedHeight(vidObj.selectedAlignment),vidObj.alignedWidth(vidObj.selectedAlignment));
 end
 
 %allocation of memory
 numFramesDown = length(1:downSamp:vidObj.numFrames);
-data = uint8(nan(vidObj.alignedHeight,vidObj.alignedWidth,numFramesDown));
+data = uint8(nan(vidObj.alignedHeight(vidObj.selectedAlignment),vidObj.alignedWidth(vidObj.selectedAlignment),numFramesDown));
 count = 0;
 brightSpots = vidObj.brightSpots;
 brightSpots = filter2(ones(3,3),brightSpots);
@@ -78,9 +78,9 @@ data = reshape(data,[],numFramesDown);
 % lowpass filter pixel dF/F to remove some noise
 [bFilt,aFilt] = butter(2,  1/((30/downSamp)/2), 'low');
 for i=1:vidObj.alignedHeight
-    tempData = double(data((1:vidObj.alignedWidth)+vidObj.alignedWidth*(i-1),:)');
+    tempData = double(data((1:vidObj.alignedWidth(vidObj.selectedAlignment))+vidObj.alignedWidth(vidObj.selectedAlignment)*(i-1),:)');
     tempData = filtfilt(bFilt,aFilt,tempData);
-    data((1:vidObj.alignedWidth)+vidObj.alignedWidth*(i-1),:) = uint8(tempData');
+    data((1:vidObj.alignedWidth(vidObj.selectedAlignment))+vidObj.alignedWidth(vidObj.selectedAlignment)*(i-1),:) = uint8(tempData');
 end
 %--------------------------
 
@@ -90,41 +90,41 @@ f = figure(1);
 
 %While loop will run through the pixel location with the highest number of
 %bright spots detected until there are only pixels with counts less than brightSpotsStopAmount
-brightSpotsStopAmount = 5; %Counts few than 5 are generally due to noise and slow down the segmentation algorithm
+brightSpotsStopAmount = 2; %Counts few than 5 are generally due to noise and slow down the segmentation algorithm
 while (sum(brightSpots(:)) > 1) && (numCounts>=brightSpotsStopAmount)
     
     %centroid is the pixel location with the current highest count of
     %bright spots
-    centroid(1) = mod(index,vidObj.alignedHeight);
-    centroid(2) = floor(index/vidObj.alignedHeight)+1;
+    centroid(1) = mod(index,vidObj.alignedHeight(vidObj.selectedAlignment));
+    centroid(2) = floor(index/vidObj.alignedHeight(vidObj.selectedAlignment))+1;
     
     %window holds the information for the iterative correlation algorithm
     %below. Used to select only the near by pixels in 'data' to run correlation on
-    window.mask = zeros(vidObj.alignedHeight,vidObj.alignedWidth);
-    window.width = uint16(max([1 centroid(2)-window.size]):min([vidObj.alignedWidth centroid(2)+window.size]));
-    window.height = uint16(max([1 centroid(1)-window.size]):min([vidObj.alignedHeight centroid(1)+window.size]));
+    window.mask = zeros(vidObj.alignedHeight(vidObj.selectedAlignment),vidObj.alignedWidth(vidObj.selectedAlignment));
+    window.width = uint16(max([1 centroid(2)-window.size]):min([vidObj.alignedWidth(vidObj.selectedAlignment) centroid(2)+window.size]));
+    window.height = uint16(max([1 centroid(1)-window.size]):min([vidObj.alignedHeight(vidObj.selectedAlignment) centroid(1)+window.size]));
         
     % Plotting stuff. Uncomment if you want to see what is going on
-    
-%     subplot_tight(4,4,[1 2 3 5 6 7 9 10 11],[1 1]*.05);
-% 
-% pcolor(double(frameMax))
-%     colormap gray;
-%     daspect([1 1 1])
-%     shading flat
-%     freezeColors
-% 
-%     hold on
-%     hhh = imshow(green);
-%     set(hhh,'AlphaData',(vidObj.segementOutline)|(vidObj.brightSpots>=2));
-%     rectangle('Position',[centroid(2)-window.size,centroid(1)-window.size,window.size*2,window.size*2]);
-%     hold off
-%     drawnow
-    
-%     if ~isempty(vidObj.segments)
-%         title(['Current Count: ' num2str(numCounts) ' | Counts left: ' num2str(sum(brightSpots(:))/sum(initialNumSpots)*100) '% | Number of Segments: ' num2str(size(vidObj.segments,3))])
-%     end
+    if plotting == true    
+        subplot_tight(4,4,[1 2 3 5 6 7 9 10 11],[1 1]*.05);
 
+        pcolor(double(frameMax))
+        colormap gray;
+        daspect([1 1 1])
+        shading flat
+        freezeColors
+
+        hold on
+        hhh = imshow(green);
+        set(hhh,'AlphaData',(vidObj.segementOutline)|(vidObj.brightSpots>=2));
+        rectangle('Position',[centroid(2)-window.size,centroid(1)-window.size,window.size*2,window.size*2]);
+        hold off
+        drawnow
+
+        if ~isempty(vidObj.segments)
+            title(['Current Count: ' num2str(numCounts) ' | Counts left: ' num2str(sum(brightSpots(:))/sum(initialNumSpots)*100) '% | Number of Segments: ' num2str(size(vidObj.segments,3))])
+        end
+    end
     %center of window. if statements handle if the window is overlapping
     %the edge of the frame
     if (window.width(1) == 1)
@@ -146,9 +146,9 @@ while (sum(brightSpots(:)) > 1) && (numCounts>=brightSpotsStopAmount)
     %'time' is used to select the relevant frames for the following
     %correlation. We want to run correlation only around frames where there
     %was activity (i.e. dF/F bright spots).
-    time.mask = zeros(vidObj.alignedHeight,vidObj.alignedWidth);
-    time.width = uint16(max([1 centroid(2)-time.size]):min([vidObj.alignedWidth centroid(2)+time.size]));
-    time.height = uint16(max([1 centroid(1)-time.size]):min([vidObj.alignedHeight centroid(1)+time.size]));
+    time.mask = zeros(vidObj.alignedHeight(vidObj.selectedAlignment),vidObj.alignedWidth(vidObj.selectedAlignment));
+    time.width = uint16(max([1 centroid(2)-time.size]):min([vidObj.alignedWidth(vidObj.selectedAlignment) centroid(2)+time.size]));
+    time.height = uint16(max([1 centroid(1)-time.size]):min([vidObj.alignedHeight(vidObj.selectedAlignment) centroid(1)+time.size]));
     time.mask(time.height, time.width) = 1;
     time.maskVect = time.mask(:);
     %----------------------------------------------------------------------
@@ -167,9 +167,9 @@ while (sum(brightSpots(:)) > 1) && (numCounts>=brightSpotsStopAmount)
     end
     
     %seg.mask holds the ROI of the current segment being detected
-    seg.mask = zeros(vidObj.alignedHeight,vidObj.alignedWidth);
-    seg.width = uint16(max([1 centroid(2)-seg.initialSize]):min([vidObj.alignedWidth centroid(2)+seg.initialSize]));
-    seg.height = uint16(max([1 centroid(1)-seg.initialSize]):min([vidObj.alignedHeight centroid(1)+seg.initialSize]));
+    seg.mask = zeros(vidObj.alignedHeight(vidObj.selectedAlignment),vidObj.alignedWidth(vidObj.selectedAlignment));
+    seg.width = uint16(max([1 centroid(2)-seg.initialSize]):min([vidObj.alignedWidth(vidObj.selectedAlignment) centroid(2)+seg.initialSize]));
+    seg.height = uint16(max([1 centroid(1)-seg.initialSize]):min([vidObj.alignedHeight(vidObj.selectedAlignment) centroid(1)+seg.initialSize]));
     
     seg.mask(seg.height,seg.width) = 1;
     seg.maskVect = seg.mask(:);
@@ -237,50 +237,50 @@ while (sum(brightSpots(:)) > 1) && (numCounts>=brightSpotsStopAmount)
         %------------------------------------------------------------------
         
         % Plotting stuff. Uncomment if you want to see what is going on.
-        
-%         subplot_tight(4,4,[4],[1 1]*.05);                
-%         pcolor(xCorrCoef);
-%         colormap jet
-%         title('CorrCoef')
-%         shading flat
-%         caxis([0 1])
-%         daspect([1 1 1])
-%         set(gca,'xTick',[])
-%         set(gca,'yTick',[])
-%         freezeColors
-% 
-%         subplot_tight(4,4,12,[1 1]*.05);  
-%         pcolor(seg.mask(window.height,window.width)*1)
-%         colormap jet
-%         set(gca,'xTick',[])
-%         set(gca,'yTick',[])
-%         freezeColors
-%         title(['Final Mask | NumPixels:' num2str(maskSum)])
-%         shading flat
-%         daspect([1 1 1])
-%         subplot_tight(4,4,[13 14 15 16],[1 1]*.05);  
-%                 ttt = find(xCorrCoef2<corrCoefThresh);
-% %                 length(ttt)
-%                 ttt = ttt(ceil(length(ttt)*rand(ceil(length(ttt)/100),1)));
-%                 if (~isempty(ttt))
-%                     plot(((1:size(temp3,2))*downSamp/30)',temp3(ttt,:)'-1,'r');
-%                     hold on 
-%                 end
-%                 ttt = find(xCorrCoef2>=corrCoefThresh);
-%                 ttt = ttt(ceil(length(ttt)*rand(ceil(length(ttt)/30),1)));
-%                 if (~isempty(ttt))
-%                     plot(((1:size(temp3,2))*downSamp/30)',temp3(ttt,:)'-1,'g');
-%                 end
-%                 plot(((1:size(temp3,2))*downSamp/30)',seg.mean-1,'k','linewidth',2);
-%                 hold off
-% %                 axis([-corrWindow.frameLength corrWindow.frameLength -.1 .3])
-%                 title('Pixel intensity')
-%                 xlabel('time (s)');
-%                 ylabel('dF/F');
-%                 ylim([-0.1 .5])
-%                 xlim([0 size(temp3,2)*downSamp/30])
-%         drawnow
+        if plotting == true
+        subplot_tight(4,4,[4],[1 1]*.05);                
+        pcolor(xCorrCoef);
+        colormap jet
+        title('CorrCoef')
+        shading flat
+        caxis([0 1])
+        daspect([1 1 1])
+        set(gca,'xTick',[])
+        set(gca,'yTick',[])
+        freezeColors
 
+        subplot_tight(4,4,12,[1 1]*.05);  
+        pcolor(seg.mask(window.height,window.width)*1)
+        colormap jet
+        set(gca,'xTick',[])
+        set(gca,'yTick',[])
+        freezeColors
+        title(['Final Mask | NumPixels:' num2str(maskSum)])
+        shading flat
+        daspect([1 1 1])
+        subplot_tight(4,4,[13 14 15 16],[1 1]*.05);  
+                ttt = find(xCorrCoef2<corrCoefThresh);
+%                 length(ttt)
+                ttt = ttt(ceil(length(ttt)*rand(ceil(length(ttt)/100),1)));
+                if (~isempty(ttt))
+                    plot(((1:size(temp3,2))*downSamp/30)',temp3(ttt,:)'-1,'r');
+                    hold on 
+                end
+                ttt = find(xCorrCoef2>=corrCoefThresh);
+                ttt = ttt(ceil(length(ttt)*rand(ceil(length(ttt)/30),1)));
+                if (~isempty(ttt))
+                    plot(((1:size(temp3,2))*downSamp/30)',temp3(ttt,:)'-1,'g');
+                end
+                plot(((1:size(temp3,2))*downSamp/30)',seg.mean-1,'k','linewidth',2);
+                hold off
+%                 axis([-corrWindow.frameLength corrWindow.frameLength -.1 .3])
+                title('Pixel intensity')
+                xlabel('time (s)');
+                ylabel('dF/F');
+                ylim([-0.1 .5])
+                xlim([0 size(temp3,2)*downSamp/30])
+        drawnow
+        end
     % Checks to see if segment stopped growing or too many iterations have passed
         if (maskSum > cellAreaLimits(2))
             attempts = inf;

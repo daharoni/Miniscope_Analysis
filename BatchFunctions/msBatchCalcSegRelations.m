@@ -3,14 +3,14 @@ function msBatchCalcSegRelations(dirName,calcCorr, calcDist, calcOverlap)
 %   Detailed explanation goes here
 
     dataFolders = msBatchFindDataFolders(dirName,[]);
-    for folderNum = 1:length(dataFolders)
+    parfor folderNum = 1:length(dataFolders)
         currentFolder = dataFolders{folderNum};
         temp = load([currentFolder '\ms.mat']);
         ms = temp.ms;
         if (isfield(ms,'segments'))
             display(['Calculating segment relations for' currentFolder]);
             ms = msCalcSegmentRelations(ms, calcCorr, calcDist, calcOverlap);
-            save([currentFolder '\ms.mat'],'ms','-v7.3');
+            parsave([currentFolder '\ms.mat'],ms);
         else
             display([currentFolder 'is missing segments']);
         end

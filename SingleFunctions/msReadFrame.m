@@ -14,7 +14,10 @@ function frame = msReadFrame(ms,frameNum,columnCorrect, align, dFF)
                       ((max(ms.wShift(:,ms.selectedAlignment))+1):(end+min(ms.wShift(:,ms.selectedAlignment))-1))-ms.wShift(frameNum,ms.selectedAlignment));
     end
     if (dFF)
-        frame = frame./ms.meanFrame{ms.selectedAlignment}-1;
+%         idx = ms.minFrame{ms.selectedAlignment}<80;
+        frame = frame./ms.minFrame{ms.selectedAlignment}-1;
+%         frame = frame./ms.meanFrame{ms.selectedAlignment}-1;
+%         frame(idx) = 0;
     end
     
 end

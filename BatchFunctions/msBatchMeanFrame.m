@@ -3,7 +3,7 @@ function msBatchMeanFrame(dirName,downsample)
 %   Detailed explanation goes here
 
     dataFolders = msBatchFindDataFolders(dirName,[]);
-    for folderNum = 1:length(dataFolders)
+    parfor folderNum = 1:length(dataFolders)
         currentFolder = dataFolders{folderNum};
         dirData = dir(currentFolder);
         dirIndex = [dirData.isdir];
@@ -13,7 +13,8 @@ function msBatchMeanFrame(dirName,downsample)
             ms = temp.ms;
             if (isfield(ms,'hShift'))  
                 ms = msMeanFrame(ms,downsample);        
-                save([currentFolder '\ms.mat'],'ms','-v7.3');
+%                save([currentFolder '\ms.mat'],'ms','-v7.3');
+				parsave([currentFolder '\ms.mat'],ms);
             else
                  display([currentFolder ' is missing alignment.']);
             end

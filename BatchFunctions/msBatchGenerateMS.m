@@ -3,13 +3,13 @@ function msBatchGenerateMS(dirName)
 %   Detailed explanation goes here
     dataFolders = msBatchFindDataFolders(dirName,[]);
     figureNum = 0;
-    for folderNum = 1:length(dataFolders)
+    parfor folderNum = 1:length(dataFolders)
         currentFolder = dataFolders{folderNum};
         dirData = dir(currentFolder);
         dirIndex = [dirData.isdir];
         fileList = {dirData(~dirIndex).name};
-        figureNum = figureNum+1;
-        figure(figureNum)
+%        figureNum = figureNum+1;
+%        figure(figureNum)
         
         if (sum(ismember(fileList,'ms.mat')) == 0)
            %Generate ms data structure 
@@ -20,7 +20,8 @@ function msBatchGenerateMS(dirName)
            ms = msFluorFrameProps(ms);
 %            title(currentFolder)
            
-           save([currentFolder '\ms.mat'],'ms','-v7.3')
+%           save([currentFolder '\ms.mat'],'ms','-v7.3')
+			parsave([currentFolder '\ms.mat'],ms)
         end   
     end
 end

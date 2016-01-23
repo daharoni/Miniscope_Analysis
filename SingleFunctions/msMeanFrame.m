@@ -4,8 +4,10 @@ function ms = msMeanFrame(ms, downsample)
 
     
     meanFrame = cell(size(ms.alignmentROI,2),1);
+    minFrame = cell(size(ms.alignmentROI,2),1);
     for ROINum=1:size(ms.alignmentROI,2)
         meanFrame{ROINum} = zeros(ms.alignedHeight(ROINum),ms.alignedWidth(ROINum));
+        minFrame{ROINum} = inf(ms.alignedHeight(ROINum),ms.alignedWidth(ROINum));
     end
     count = 0;
     for frameNum=1:downsample:ms.numFrames
@@ -15,7 +17,10 @@ function ms = msMeanFrame(ms, downsample)
             for ROINum=1:size(ms.alignmentROI,2)
                 frameTemp = frame(((max(ms.hShift(:,ROINum))+1):(end+min(ms.hShift(:,ROINum))-1))-ms.hShift(frameNum,ROINum), ...
                   ((max(ms.wShift(:,ROINum))+1):(end+min(ms.wShift(:,ROINum))-1))-ms.wShift(frameNum,ROINum));
-                meanFrame{ROINum} = meanFrame{ROINum} + frameTemp;              
+                meanFrame{ROINum} = meanFrame{ROINum} + frameTemp;  
+                
+                frameTemp(:,:,2) = minFrame{ROINum};
+                minFrame{ROINum} = min(frameTemp,[],3);
             end
 %         end
         if (mod(frameNum,1+1000*downsample)==0)
@@ -25,6 +30,7 @@ function ms = msMeanFrame(ms, downsample)
 
     for ROINum=1:size(ms.alignmentROI,2)
         ms.meanFrame{ROINum} = meanFrame{ROINum}/count;
+        ms.minFrame = minFrame;
     end
 end
 

@@ -3,7 +3,7 @@ function msBatchSegment(dirName)
 %   Detailed explanation goes here
 
     dataFolders = msBatchFindDataFolders(dirName,[]);
-    for folderNum = 1:length(dataFolders)
+    parfor folderNum = 1:length(dataFolders)
         currentFolder = dataFolders{folderNum};
         temp = load([currentFolder '\ms.mat']);
         ms = temp.ms;
@@ -23,15 +23,16 @@ function msBatchSegment(dirName)
             
 %             ms = msAutoSegment(ms,30,[],[80 600], 30,.05,1.5); %old
 %             alignment
-            ms = msFindBrightSpots(ms,30,[],.03,0.02);
-            save([currentFolder '\ms.mat'],'ms','-v7.3');
-            ms = msAutoSegment2(ms,[],[60 700],5,.90);
+            ms = msFindBrightSpots(ms,30,[],.03,0.02,false);
+%            save([currentFolder '\ms.mat'],'ms','-v7.3');
+            ms = msAutoSegment2(ms,[],[60 700],5,.90,false);
 
 %             ms.segments = ms2.segments;
 %             ms.cellAreaLimits = ms2.cellAreaLimits;
 %             ms.numSegments = ms2.numSegments;
 %             ms.segementOutline = ms2.segementOutline;
-            save([currentFolder '\ms.mat'],'ms','-v7.3');
+%            save([currentFolder '\ms.mat'],'ms','-v7.3');
+			parsave([currentFolder '\ms.mat'],ms)
         else
             display([currentFolder 'is missing alignment']);
         end

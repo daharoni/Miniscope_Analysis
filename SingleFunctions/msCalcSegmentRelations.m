@@ -22,7 +22,8 @@ function vidObj = msCalcSegmentRelations(vidObj,calcCorr, calcDist, calcOverlap)
         end
         if calcCorr
         segCorr(segNum:vidObj.numSegments,segNum) = ...
-            corr(vidObj.trace(:,segNum:vidObj.numSegments),vidObj.trace(:,segNum));
+            corr(vidObj.trace(:,segNum:vidObj.numSegments)-repmat(vidObj.dFFBaseline,1,length(segNum:vidObj.numSegments)),vidObj.trace(:,segNum)-vidObj.dFFBaseline);
+%			corr(vidObj.trace(:,segNum:vidObj.numSegments),vidObj.trace(:,segNum));
         end
         if calcDist
         segDist(segNum:vidObj.numSegments,segNum) = ...
