@@ -23,22 +23,22 @@ end
 hSmall = fspecial('average', 3);
 hLarge = fspecial('average', 60);
 
-red = cat(3, ones(vidObj.alignedHeight,vidObj.alignedWidth), ...
-    zeros(vidObj.alignedHeight,vidObj.alignedWidth), ...
-    zeros(vidObj.alignedHeight,vidObj.alignedWidth));
+red = cat(3, ones(vidObj.alignedHeight(vidObj.selectedAlignment),vidObj.alignedWidth(vidObj.selectedAlignment)), ...
+    zeros(vidObj.alignedHeight(vidObj.selectedAlignment),vidObj.alignedWidth(vidObj.selectedAlignment)), ...
+    zeros(vidObj.alignedHeight(vidObj.selectedAlignment),vidObj.alignedWidth(vidObj.selectedAlignment)));
 
 %used for overlay in display
-green = cat(3, zeros(vidObj.alignedHeight,vidObj.alignedWidth), ...
-    ones(vidObj.alignedHeight,vidObj.alignedWidth), ...
-    zeros(vidObj.alignedHeight,vidObj.alignedWidth));
+green = cat(3, zeros(vidObj.alignedHeight(vidObj.selectedAlignment),vidObj.alignedWidth(vidObj.selectedAlignment)), ...
+    ones(vidObj.alignedHeight(vidObj.selectedAlignment),vidObj.alignedWidth(vidObj.selectedAlignment)), ...
+    zeros(vidObj.alignedHeight(vidObj.selectedAlignment),vidObj.alignedWidth(vidObj.selectedAlignment)));
 
 % kernal used for eroding and dilating
 se = strel('diamond',10);
 se2 = strel('diamond',2);
 
-frame = nan(vidObj.alignedHeight,vidObj.alignedWidth,stepSize);
-vidObj.brightSpots = zeros(vidObj.alignedHeight,vidObj.alignedWidth); %each cell (or pixel) contains the count of local maxima detected
-vidObj.brightSpotTiming = sparse(vidObj.alignedHeight*vidObj.alignedWidth,0); %holds the spatiotemporal information of detected bright spots
+frame = nan(vidObj.alignedHeight(vidObj.selectedAlignment),vidObj.alignedWidth(vidObj.selectedAlignment),stepSize);
+vidObj.brightSpots = zeros(vidObj.alignedHeight(vidObj.selectedAlignment),vidObj.alignedWidth(vidObj.selectedAlignment)); %each cell (or pixel) contains the count of local maxima detected
+vidObj.brightSpotTiming = sparse(vidObj.alignedHeight(vidObj.selectedAlignment)*vidObj.alignedWidth(vidObj.selectedAlignment),0); %holds the spatiotemporal information of detected bright spots
 
 for startFrameNum=frameLimits(1):stepSize:min([frameLimits(2) vidObj.numFrames-stepSize]) %steps through data video
    
