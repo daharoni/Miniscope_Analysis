@@ -36,7 +36,7 @@ overlapThresh = .8;
 msBatchCleanSegments(pwd,corrThresh,distThresh,overlapThresh);
 
 %% Calculate Segment relationships
-calcCorr = true;
+calcCorr = false;
 calcDist = true;
 calcOverlap = true;
 msBatchCalcSegRelations(pwd,calcCorr, calcDist, calcOverlap);
