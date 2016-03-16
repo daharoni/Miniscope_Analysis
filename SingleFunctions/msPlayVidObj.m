@@ -8,16 +8,16 @@ function msPlayVidObj(vidObj,downSamp,columnCorrect, align, dFF, overlay)
             pcolor(frame);
             shading flat
             if dFF
-                caxis([0 0.3])
+                caxis([0 0.5])
             else
-                caxis([60 120])
+                caxis([0 255])
             end
             colormap gray
             
         if overlay
-            green = cat(3, ones(vidObj.alignedHeight,vidObj.alignedWidth), ...
-                zeros(vidObj.alignedHeight,vidObj.alignedWidth), ...
-                zeros(vidObj.alignedHeight,vidObj.alignedWidth));
+            green = cat(3, zeros(vidObj.alignedHeight(vidObj.selectedAlignment),vidObj.alignedWidth(vidObj.selectedAlignment)), ...
+    ones(vidObj.alignedHeight(vidObj.selectedAlignment),vidObj.alignedWidth(vidObj.selectedAlignment)), ...
+    zeros(vidObj.alignedHeight(vidObj.selectedAlignment),vidObj.alignedWidth(vidObj.selectedAlignment)));
             hold on
             h = imshow(green);
             set(h, 'AlphaData', vidObj.segementOutline)

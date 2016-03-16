@@ -1,4 +1,4 @@
-function msBatchAlignmentFFT(dirName)
+function msBatchAlignmentFFT(dirName,plotting)
 %MSBATCHALIGNMENT Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -16,7 +16,7 @@ function msBatchAlignmentFFT(dirName)
             ms = temp.ms;
 %             if (~isfield(ms,'hShift')) %does not have alignment already done
                 display(['Working on alginment of ' currentFolder]);
-                ms = msAlignmentFFT(ms);  
+                ms = msAlignmentFFT(ms,plotting);  
 %                 ms = msAlignment(ms);
                 save([currentFolder '\ms.mat'],'ms','-v7.3');
 %             else

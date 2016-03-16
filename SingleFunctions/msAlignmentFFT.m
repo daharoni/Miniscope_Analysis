@@ -1,4 +1,4 @@
-function ms = msAlignmentFFT(ms)
+function ms = msAlignmentFFT(ms,plotting)
 %MSALIGNMENTFFT Summary of this function goes here
 %   Detailed explanation goes here
     
@@ -9,7 +9,7 @@ function ms = msAlignmentFFT(ms)
             rect([3 4]) = rect([3 4]) -1;
         end
         ROI = uint16([rect(1) rect(1)+rect(3) rect(2) rect(2)+rect(4)]);
-        r = sbxalign(ms,1:ms.numFrames,ROI);
+        r = sbxalign(ms,1:ms.numFrames,ROI,plotting);
 
         ms.hShift(:,ROINum) = r.T(:,1);
         ms.wShift(:,ROINum) = r.T(:,2);

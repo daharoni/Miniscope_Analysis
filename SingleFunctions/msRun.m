@@ -9,8 +9,9 @@ ms = msSelectFluorThresh(ms);
 %% Allows user to select ROIs for each data folder
 ms = msSelectROIs(ms);
 %% Run alignment across all ROIs
+plotting = true;
 tic
-ms = msAlignmentFFT(ms);
+ms = msAlignmentFFT(ms,plotting);
 toc
 %% Calculate mean frames
 downsample = 5;

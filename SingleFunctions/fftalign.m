@@ -1,4 +1,4 @@
-function [u,v] = fftalign(A,B)
+function [u,v] = fftalign(A,B,plotting)
 
 % N = min(size(A));
 
@@ -41,29 +41,30 @@ for i=1:length(bwProps)
     
 end
 
+if plotting==true
+    subplot(1,3,1)
+    pcolor((A))
+    shading flat
+    daspect([1 1 1])
+    subplot(1,3,2)
+    pcolor((B))
+    shading flat
+    daspect([1 1 1])
 
-subplot(1,3,1)
-pcolor((A))
-shading flat
-daspect([1 1 1])
-subplot(1,3,2)
-pcolor((B))
-shading flat
-daspect([1 1 1])
+    subplot(1,3,3)
 
-subplot(1,3,3)
-
-% C(C<0.6) = 0;
-pcolor(C)
-% colorbar
-daspect([1 1 1])
-shading flat
-axis([size(C,2)/2+[-50 50] size(C,1)/2+[-50 50]])
-hold on
-plot(jj,ii,'r.','markersize',20)
-title('FFT Corr')
-% title([num2str(ii) ' | ' num2str(jj)]);
-hold off
+    % C(C<0.6) = 0;
+    pcolor(C)
+    % colorbar
+    daspect([1 1 1])
+    shading flat
+    axis([size(C,2)/2+[-50 50] size(C,1)/2+[-50 50]])
+    hold on
+    plot(jj,ii,'r.','markersize',20)
+    title('FFT Corr')
+    % title([num2str(ii) ' | ' num2str(jj)]);
+    hold off
+end
 
 
 % subplot(1,4,4)

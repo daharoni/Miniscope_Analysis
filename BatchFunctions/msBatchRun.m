@@ -8,10 +8,10 @@ msBatchSelectFluorThresh(pwd);
 msBatchSelectROIs(pwd)
 
 %% Run alignment across all data and ROIs
-
+plotting = false;
 %for miniscope data try scaling everything to min max range
 tic
-msBatchAlignmentFFT(pwd);
+msBatchAlignmentFFT(pwd,plotting);
 toc
 %% Calculate mean frames
 downsample = 1;

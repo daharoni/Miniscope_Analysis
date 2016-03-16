@@ -1,4 +1,4 @@
-function r = sbxalign(vidobj,idx, ROI)
+function r = sbxalign(vidobj,idx, ROI,plotting)
 if(length(idx)==1)
     hLarge = fspecial('average', 40);
     hSmall = fspecial('average', 2);
@@ -34,7 +34,7 @@ else
  r0 = sbxalign(vidobj,idx0, ROI); % align each group
  r1 = sbxalign(vidobj,idx1, ROI);
  
- [u v] = fftalign(r0.m{1},r1.m{1}); % align their means
+ [u v] = fftalign(r0.m{1},r1.m{1},plotting); % align their means
  
  for i=1:4 % shift mean image and moments
  r0.m{i} = circshift(r0.m{i},[u v]);
