@@ -31,8 +31,8 @@ else
  idx0 = idx(1:floor(end/2)); % split into two groups
  idx1 = idx(floor(end/2)+1 : end);
  
- r0 = sbxalign(vidobj,idx0, ROI); % align each group
- r1 = sbxalign(vidobj,idx1, ROI);
+ r0 = sbxalign(vidobj,idx0, ROI,plotting); % align each group
+ r1 = sbxalign(vidobj,idx1, ROI,plotting);
  
  [u v] = fftalign(r0.m{1},r1.m{1},plotting); % align their means
  
