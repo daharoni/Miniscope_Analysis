@@ -44,6 +44,7 @@ function ms = msGenerateVideoObj(dirName, filePrefix)
             buffer1 = dataArray{:, 4};
             clearvars dataArray;
             fclose(fileID);
+            cameraMatched = 0;
             for j=0:max(camNum)
 %                 (frameNum(find(camNum==j,1,'last')) == ms.numFrames)
 %                 (sum(camNum==j) == ms.numFrames)
@@ -53,11 +54,12 @@ function ms = msGenerateVideoObj(dirName, filePrefix)
                     ms.time = sysClock(camNum == j);
                     ms.time(1) = 0;
                     ms.maxBufferUsed = max(buffer1(camNum==j));
-                
-                else
-                    display(['Problem matching up timestamps for ' dirName]);        
+                    cameraMatched = 1;
                 end
                 end
+            end
+            if ~cameraMatched
+                display(['Problem matching up timestamps for ' dirName]);
             end
         end
 %         
