@@ -3,7 +3,11 @@ ms = msGenerateVideoObj(pwd,'msCam');
 ms = msColumnCorrection(ms,5); %Generally not used 
 ms = msFluorFrameProps(ms);
 
-%% Select fluorescnece thesh for good frames
+%% Select fluorescence thresh for good frames
+% The output of msSelectFluorThresh(), ms.goodFrames, is not implemented. 
+% Therefore the threshold selected has no effect on the rest of the analysis. 
+% msSelectFluorThresh() does generate a potentially interesting plot of  
+% fluorescence changes across recording sessions. 
 ms = msSelectFluorThresh(ms);
 
 %% Allows user to select ROIs for each data folder

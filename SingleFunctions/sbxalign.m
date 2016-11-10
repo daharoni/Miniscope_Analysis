@@ -1,4 +1,7 @@
 function r = sbxalign(vidobj,idx, ROI,plotting)
+% based on work of Dario Ringach 
+% https://scanbox.org/2014/03/20/recursive-image-alignment-and-statistics/
+
 if(length(idx)==1)
     hLarge = fspecial('average', 40);
     hSmall = fspecial('average', 2);
