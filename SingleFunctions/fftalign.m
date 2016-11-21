@@ -1,4 +1,6 @@
 function [u,v] = fftalign(A,B,plotting)
+% based on work of Dario Ringach 
+% https://scanbox.org/2014/03/20/recursive-image-alignment-and-statistics/
 
 % N = min(size(A));
 

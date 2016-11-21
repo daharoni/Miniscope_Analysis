@@ -1,6 +1,10 @@
 function ms = msSelectROIs(ms)
-%MSSELECTROIS Summary of this function goes here
-%   Detailed explanation goes here
+%MSSELECTROIS User interface for selection of ROIs for aligment algorithm.
+%   The motion correction algorithm (sbxalign.m and fftalign.m) came from Dario Ringash, 
+%   https://scanbox.wordpress.com/2014/03/20/recursive-image-alignment-and-statistics/. 
+%   We suggest using a small ROI roughly 1/6 the size of the entire frame.
+%   The ROI should avoid the edges of the frame and should contain a landmark 
+%   (blood vessel or cell that is constantly visible). 
 
     numROIs=0;
     userInput = 'Y';
