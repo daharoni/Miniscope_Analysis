@@ -1,6 +1,12 @@
 %% Generates the initial ms data struct for data set contained in current folder
-ms = msGenerateVideoObj(pwd,'msCam');  
-ms = msColumnCorrection(ms,5); %Generally not used 
+ms = msGenerateVideoObj(pwd,'msCam');
+
+% Newer versions of the Miniscope system do not require Column Correction. 
+% If this is the case for you still run msColumn Correction() then run the two lines of code below it.
+ms = msColumnCorrection(ms,5);  
+% ms.columnCorrection(:) = 0;
+% ms.columnCorrectionOffset = 0;
+
 ms = msFluorFrameProps(ms);
 
 %% Select fluorescence thresh for good frames
